@@ -56,6 +56,11 @@ def _parallel(ordered: bool, function: Callable, *iterables: Iterable, **kwargs:
 
     pool.clear()
 
+def _add_docs(f):
+    doc = """   """
+    f.__doc__ += "\n\n"
+    
+
 
 def p_map(function: Callable, *iterables: Iterable, **kwargs: Any) -> List[Any]:
     """Performs a parallel ordered map with a progress bar."""
@@ -68,7 +73,16 @@ def p_map(function: Callable, *iterables: Iterable, **kwargs: Any) -> List[Any]:
 
 
 def p_imap(function: Callable, *iterables: Iterable, **kwargs: Any) -> Generator:
-    """Returns a generator for a parallel ordered map with a progress bar."""
+    """Returns a generator for a parallel ordered map with a progress bar.
+    
+    Arguments:
+        - function(Callable): The function to apply to each element of the given Iterables.
+        - iterables(Tuple[Iterable]): One or more Iterables containing the data to be mapped.
+    
+    Keyword arguments:
+        - num_cpus(int): Number of cpus to use. If unspecified, use all cpus
+        - total(int): total elements in the iterator. If unspecified, this number will be automatically determined using the iterators
+        - tqdm(tqdm object): the tqdm progress bar to use"""
 
     ordered = True
     generator = _parallel(ordered, function, *iterables, **kwargs)
@@ -77,7 +91,16 @@ def p_imap(function: Callable, *iterables: Iterable, **kwargs: Any) -> Generator
 
 
 def p_umap(function: Callable, *iterables: Iterable, **kwargs: Any) -> List[Any]:
-    """Performs a parallel unordered map with a progress bar."""
+    """Performs a parallel unordered map with a progress bar.
+    
+    Arguments:
+        - function(Callable): The function to apply to each element of the given Iterables.
+        - iterables(Tuple[Iterable]): One or more Iterables containing the data to be mapped.
+    
+    Keyword arguments:
+        - num_cpus(int): Number of cpus to use. If unspecified, use all cpus
+        - total(int): total elements in the iterator. If unspecified, this number will be automatically determined using the iterators
+        - tqdm(tqdm object): the tqdm progress bar to use"""
 
     ordered = False
     generator = _parallel(ordered, function, *iterables, **kwargs)
@@ -87,7 +110,16 @@ def p_umap(function: Callable, *iterables: Iterable, **kwargs: Any) -> List[Any]
 
 
 def p_uimap(function: Callable, *iterables: Iterable, **kwargs: Any) -> Generator:
-    """Returns a generator for a parallel unordered map with a progress bar."""
+    """Returns a generator for a parallel unordered map with a progress bar.
+    
+    Arguments:
+        - function(Callable): The function to apply to each element of the given Iterables.
+        - iterables(Tuple[Iterable]): One or more Iterables containing the data to be mapped.
+    
+    Keyword arguments:
+        - num_cpus(int): Number of cpus to use. If unspecified, use all cpus
+        - total(int): total elements in the iterator. If unspecified, this number will be automatically determined using the iterators
+        - tqdm(tqdm object): the tqdm progress bar to use"""
 
     ordered = False
     generator = _parallel(ordered, function, *iterables, **kwargs)
@@ -116,7 +148,16 @@ def _sequential(function: Callable, *iterables: Iterable, **kwargs: Any) -> Gene
 
 
 def t_map(function: Callable, *iterables: Iterable, **kwargs: Any) -> List[Any]:
-    """Performs a sequential map with a progress bar."""
+    """Performs a sequential map with a progress bar.
+    
+    Arguments:
+        - function(Callable): The function to apply to each element of the given Iterables.
+        - iterables(Tuple[Iterable]): One or more Iterables containing the data to be mapped.
+    
+    Keyword arguments:
+        - num_cpus(int): Number of cpus to use. If unspecified, use all cpus
+        - total(int): total elements in the iterator. If unspecified, this number will be automatically determined using the iterators
+        - tqdm(tqdm object): the tqdm progress bar to use"""
 
     generator = _sequential(function, *iterables, **kwargs)
     result = list(generator)
@@ -125,7 +166,16 @@ def t_map(function: Callable, *iterables: Iterable, **kwargs: Any) -> List[Any]:
 
 
 def t_imap(function: Callable, *iterables: Iterable, **kwargs: Any) -> Generator:
-    """Returns a generator for a sequential map with a progress bar."""
+    """Returns a generator for a sequential map with a progress bar.
+    
+    Arguments:
+        - function(Callable): The function to apply to each element of the given Iterables.
+        - iterables(Tuple[Iterable]): One or more Iterables containing the data to be mapped.
+    
+    Keyword arguments:
+        - num_cpus(int): Number of cpus to use. If unspecified, use all cpus
+        - total(int): total elements in the iterator. If unspecified, this number will be automatically determined using the iterators
+        - tqdm(tqdm object): the tqdm progress bar to use"""
 
     generator = _sequential(function, *iterables, **kwargs)
 
