@@ -46,6 +46,7 @@ def _parallel(ordered: bool, function: Callable, mode: str, *iterables: Iterable
 
     # Create parallel generator
     map_type = 'imap' if ordered else 'uimap'
+    assert mode and mode in ("parallel", "threading"), f"Internal error: recieved unknown mode {mode}"
     pool = ProcessPool(num_cpus) if mode == "parallel" else ThreadPool(num_cpus)
     map_func = getattr(pool, map_type)
 
@@ -175,6 +176,77 @@ def s_map(function: Callable, *iterables: Iterable, **kwargs: Any) -> List[Any]:
         - kwargs already present in tqdm"""
 
     generator = s_imap(function, *iterables, **kwargs)
+    result = list(generator)
+
+    return result
+
+def t_imap(function: Callable, *iterables: Iterable, **kwargs: Any) -> Generator:
+    """Returns a generator for a multithreaded ordered map with a progress bar.
+    
+    Arguments:
+        - function(Callable): The function to apply to each element of the given Iterables.
+        - iterables(Tuple[Iterable]): One or more Iterables containing the data to be mapped.
+    
+    Keyword arguments:
+        - num_cpus(int): Number of cpus to use. If unspecified, use all cpus
+        - total(int): total elements in the iterator. If unspecified, this number will be automatically determined using the iterators
+        - tqdm(tqdm object): the tqdm progress bar to use
+        - other kwargs already present in tqdm"""
+
+    generator = _parallel(True, function, "threading", *iterables, **kwargs)
+
+    return generator
+
+def t_map(function: Callable, *iterables: Iterable, **kwargs: Any) -> List[Any]:
+    """Performs a multithreaded ordered map with a progress bar.
+    
+    Arguments:
+        - function(Callable): The function to apply to each element of the given Iterables.
+        - iterables(Tuple[Iterable]): One or more Iterables containing the data to be mapped.
+    
+    Keyword arguments:
+        - num_cpus(int): Number of cpus to use. If unspecified, use all cpus
+        - total(int): total elements in the iterator. If unspecified, this number will be automatically determined using the iterators
+        - tqdm(tqdm object): the tqdm progress bar to use
+        - other kwargs already present in tqdm"""
+
+    generator = p_imap(function, *iterables, **kwargs)
+    result = list(generator)
+
+    return result
+
+def t_uimap(function: Callable, *iterables: Iterable, **kwargs: Any) -> Generator:
+    """Returns a generator for a multithreaded unordered map with a progress bar.
+    
+    Arguments:
+        - function(Callable): The function to apply to each element of the given Iterables.
+        - iterables(Tuple[Iterable]): One or more Iterables containing the data to be mapped.
+    
+    Keyword arguments:
+        - num_cpus(int): Number of cpus to use. If unspecified, use all cpus
+        - total(int): total elements in the iterator. If unspecified, this number will be automatically determined using the iterators
+        - tqdm(tqdm object): the tqdm progress bar to use
+        - other kwargs already present in tqdm"""
+
+    generator = _parallel(False, function, "threading", *iterables, **kwargs)
+
+    return generator
+
+
+def t_umap(function: Callable, *iterables: Iterable, **kwargs: Any) -> List[Any]:
+    """Performs a multithreaded unordered map with a progress bar.
+    
+    Arguments:
+        - function(Callable): The function to apply to each element of the given Iterables.
+        - iterables(Tuple[Iterable]): One or more Iterables containing the data to be mapped.
+    
+    Keyword arguments:
+        - num_cpus(int): Number of cpus to use. If unspecified, use all cpus
+        - total(int): total elements in the iterator. If unspecified, this number will be automatically determined using the iterators
+        - tqdm(tqdm object): the tqdm progress bar to use
+        - other kwargs already present in tqdm"""
+
+    generator = p_uimap(function, *iterables, **kwargs)
     result = list(generator)
 
     return result
