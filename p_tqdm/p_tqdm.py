@@ -15,7 +15,6 @@ from pathos.helpers import cpu_count
 from pathos.multiprocessing import ProcessPool as Pool
 from tqdm.auto import tqdm
 
-
 def _parallel(ordered: bool, function: Callable, *iterables: Iterable, **kwargs: Any) -> Generator:
     """Returns a generator for a parallel map with a progress bar.
 
@@ -56,14 +55,17 @@ def _parallel(ordered: bool, function: Callable, *iterables: Iterable, **kwargs:
 
     pool.clear()
 
-def _add_docs(f):
-    doc = """   """
-    f.__doc__ += "\n\n"
-    
-
-
 def p_map(function: Callable, *iterables: Iterable, **kwargs: Any) -> List[Any]:
-    """Performs a parallel ordered map with a progress bar."""
+    """Performs a parallel ordered map with a progress bar.
+    
+    Arguments:
+        - function(Callable): The function to apply to each element of the given Iterables.
+        - iterables(Tuple[Iterable]): One or more Iterables containing the data to be mapped.
+    
+    Keyword arguments:
+        - num_cpus(int): Number of cpus to use. If unspecified, use all cpus
+        - total(int): total elements in the iterator. If unspecified, this number will be automatically determined using the iterators
+        - tqdm(tqdm object): the tqdm progress bar to use"""
 
     ordered = True
     generator = _parallel(ordered, function, *iterables, **kwargs)
